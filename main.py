@@ -44,8 +44,9 @@ def parse_input(user_input):
 def add_contact(args, book):        # Add name and phone to Address Book
     name = args[0].title()
     phone = args[1]
-    rec = cli_ab.Record(name)       # Create a record
-    rec.add_phone(phone)            # Add phone number to record
+    rec = Record(name)
+    # rec = cli_ab.Record(name)       # Create a record
+    rec.add_phone(phone)           # Add phone number to record
     book.add_record(rec)            # Add record to Address Book
     return "Contact added."
 

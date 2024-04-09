@@ -19,7 +19,11 @@ class Field:
 
 class Birthday(Field):
     def is_valid(self, value):
-        return len(value) == 10 and bool(datetime.strptime(value, "%d.%m.%Y"))
+        try:
+            datetime.strptime(value, "%d.%m.%Y")
+            return True
+        except ValueError:
+            return False
 
 
 class Name(Field):
