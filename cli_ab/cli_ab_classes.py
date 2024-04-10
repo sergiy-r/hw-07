@@ -7,6 +7,7 @@ from datetime import datetime
 class Field:
     def __init__(self, value):
         if not self.is_valid(value):
+            print("Value Error in Class Field")
             raise ValueError
         self.value = value
 
@@ -19,12 +20,15 @@ class Field:
 
 class Birthday(Field):
     def is_valid(self, value):
-        try:
-            datetime.strptime(value, "%d.%m.%Y")
-            return True
-        except ValueError:
-            return False
+        return bool(datetime.strptime(value, "%d.%m.%Y"))
+        # try:
+        #     datetime.strptime(value, "%d.%m.%Y")
+        #     return True
+        # except ValueError:
+        #     return False
 
+    def __str__(self):
+        return str(self.value)
 
 class Name(Field):
     def __str__(self):
@@ -46,8 +50,6 @@ class Record:
         birthday = Birthday(value)
         self.birthday = birthday
         return birthday
-
-
 
     def add_phone(self, value):
         phone = Phone(value)
@@ -73,7 +75,7 @@ class Record:
         self.remove_phone(old_phone)
 
     def __str__(self):
-        return (f"Contact name: {str(self.name)}, phones: {', '.join(str(p) for p in self.phones)}, "
+        return (f"Contact name: {str(self.name)}, phone(s): {', '.join(str(p) for p in self.phones)}, "
                 f"birthday: {str(self.birthday)} ")
 
 
@@ -82,11 +84,14 @@ class AddressBook(UserDict):
         self.data[record.name.value] = record
 
     def find(self, name):
-        print("***", self.data.get(name))
         return self.data.get(name)
 
     def delete(self, name):
         self.data.pop(name)
+
+    def __str__(self):
+        return "\n".join(str(record) for record in self.data.values())
+
 
 #
 # # Створення нової адресної книги
@@ -123,5 +128,5 @@ class AddressBook(UserDict):
 #
 # # Видалення запису Jane
 # book.delete("Jane")
-#
+
 
