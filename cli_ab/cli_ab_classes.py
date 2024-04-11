@@ -2,12 +2,11 @@
 # THis module defines the classes and methods used in the Address Book CLI Bot.
 
 from collections import UserDict
-from datetime import datetime
+from datetime import datetime, timedelta
 
 class Field:
     def __init__(self, value):
         if not self.is_valid(value):
-            print("Value Error in Class Field")
             raise ValueError
         self.value = value
 
@@ -51,6 +50,24 @@ class Record:
         self.birthday = birthday
         return birthday
 
+    def congrats_date(self):  # method returns congratulations date for the record
+        today = datetime.today().date()
+        birthday = datetime.strptime(str(self.birthday), "%d.%m.%Y").date()
+
+        # Calculate the next birthday
+        if datetime(today.year, birthday.month, birthday.day).date() < today:
+            next_birthday = (datetime(today.year + 1, birthday.month, birthday.day)).date()
+        else:
+            next_birthday = datetime(today.year , birthday.month, birthday.day).date()
+
+        # Calculate the congratulations date
+        if next_birthday.isoweekday() in [6, 7]:
+            congrats_date = next_birthday + timedelta(days=(8 - next_birthday.isoweekday()))
+        else:
+            congrats_date = next_birthday
+
+        return congrats_date
+
     def add_phone(self, value):
         phone = Phone(value)
         self.phones.append(phone)
@@ -92,7 +109,6 @@ class AddressBook(UserDict):
     def __str__(self):
         return "\n".join(str(record) for record in self.data.values())
 
-
 #
 # # Створення нової адресної книги
 # book = AddressBook()
@@ -102,6 +118,7 @@ class AddressBook(UserDict):
 # john_record.add_phone("1234567890")
 # john_record.add_phone("5555555555")
 # john_record.add_birthday("01.01.2000")
+# print("Congrats date:", john_record.congrats_date())
 # # Додавання запису John до адресної книги
 # book.add_record(john_record)
 # print("book: ", book)
@@ -109,6 +126,8 @@ class AddressBook(UserDict):
 # # Створення та додавання нового запису для Jane
 # jane_record = Record("Jane")
 # jane_record.add_phone("9876543210")
+# jane_record.add_birthday("01.01.2000")
+# jane_record.congrats_date()
 # book.add_record(jane_record)
 #
 # # Виведення всіх записів у книзі
